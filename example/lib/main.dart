@@ -15,11 +15,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  static const platform = const MethodChannel('app.channel.shared.data');
+  String dataShared = "No data";
 
   @override
   void initState() {
     super.initState();
+    getSharedText();
   }
 
   @override
@@ -40,10 +42,19 @@ class _MyAppState extends State<MyApp> {
                 print(data);
               });
             },
-            child: Text("Share On Instagram Story"),
+            child: Text(dataShared),
           ),
         ),
       ),
     );
+  }
+
+  getSharedText() async {
+    var sharedData = await platform.invokeMethod("getSharedText");
+    if (sharedData != null) {
+      setState(() {
+        dataShared = sharedData;
+      });
+    }
   }
 }
